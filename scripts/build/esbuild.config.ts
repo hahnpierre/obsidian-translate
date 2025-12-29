@@ -1,9 +1,9 @@
 import builtins from "builtin-modules";
-import esbuild from "esbuild";
-import inlineWorkerPlugin from "esbuild-plugin-inline-worker";
-import { sassPlugin } from "esbuild-sass-plugin";
-import esbuildSvelte from "esbuild-svelte";
-import process from "process";
+	import esbuild from "esbuild";
+import inlineWorkerPlugin from "./inline-worker-plugin";
+	import { sassPlugin } from "esbuild-sass-plugin";
+	import esbuildSvelte from "esbuild-svelte";
+	import process from "process";
 import sveltePreprocess from "svelte-preprocess";
 import { banner } from "./banner";
 
@@ -62,13 +62,12 @@ esbuild.build({
 				return warning.code !== "a11y-click-events-have-key-events" &&
 					warning.code !== "a11y-no-static-element-interactions" &&
 					warning.code !== "a11y-no-noninteractive-element-interactions" &&
-					warning.code !== "a11y-no-noninteractive-tabindex";
-			},
-		}),
-		inlineWorkerPlugin({
-			// @ts-expect-error (Older config of inlineWorkerPlugin)
-			workerName: "Translate Bergamot Worker",
-			external: ["obsidian"],
-		}),
-	],
+			warning.code !== "a11y-no-noninteractive-tabindex";
+		},
+	}),
+	inlineWorkerPlugin({
+		workerName: "Translate Bergamot Worker",
+		external: ["obsidian"],
+	}),
+],
 }).catch(() => process.exit(1));

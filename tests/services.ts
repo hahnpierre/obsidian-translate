@@ -1,11 +1,11 @@
 // Add node to the global scope so that we can use it in the tests
+import fetchMock from "jest-fetch-mock";
 import { existsSync, readFileSync } from "fs";
 import { TextDecoder, TextEncoder } from "util";
 
-// @ts-expect-error (TextEncoder is not defined in the Node.js global scope)
-global.TextEncoder = TextEncoder;
-// @ts-expect-error (TextDecoder is not defined in the Node.js global scope)
-global.TextDecoder = TextDecoder;
+// Ensure globals exist in the test environment (Node does not provide DOM encoders by default)
+(globalThis as Record<string, unknown>).TextEncoder = TextEncoder as unknown;
+(globalThis as Record<string, unknown>).TextDecoder = TextDecoder as unknown;
 
 // Add mock for SubtleCrypto
 const crypto = require("crypto");
@@ -13,8 +13,7 @@ Object.defineProperty(global.self, "crypto", {
 	value: Object.setPrototypeOf({ subtle: crypto.webcrypto.subtle }, crypto),
 });
 
-require("jest-fetch-mock").enableMocks();
-// @ts-expect-error (fetchMock is not defined in the global scope)
+fetchMock.enableMocks();
 fetchMock.dontMock();
 
 export const filled_settings: TranslatorPluginSettings = existsSync("tests/correct-data.json") ?

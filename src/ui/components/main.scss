@@ -1,0 +1,87 @@
+.translator-component-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  background: var(--background-primary);
+  cursor: pointer;
+}
+
+.translator-component-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.translator-component-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.translator-component-select {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+}
+
+.translator-component-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.translator-component-setting {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.translator-component-setting .setting-item-info {
+  flex: 1;
+}
+
+.translator-component-setting .setting-item-control {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.translator-component-setting .setting-item-name {
+  font-weight: 600;
+}
+
+.translator-component-setting .setting-item-description {
+  color: var(--text-muted);
+}
+
+.translator-component-notice {
+  margin-top: 4px;
+  color: var(--text-muted);
+}
+
+.translator-component-button-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.translator-component-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.translator-component-view-header {
+  margin-bottom: 8px;
+}
+
+.translator-component-view-body {
+  flex: 1;
+}
+

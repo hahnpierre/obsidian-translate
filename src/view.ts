@@ -17,7 +17,7 @@ import type { TranslatorServiceType } from "./types";
 import { ViewAppearanceModal } from "./ui/modals";
 import ViewFunctionalityModal from "./ui/modals/view_functionality_modal";
 
-interface TranslatorViewState {
+export interface TranslatorViewState {
 	language_from: string;
 	language_to: string;
 	translation_service: TranslatorServiceType;
