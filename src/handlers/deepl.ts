@@ -88,15 +88,19 @@ export class Deepl extends DummyTranslate {
 	// Language detection is not really a high-volume operation, so this is good-enough.
 	// Amount of characters being sent is also reduced by the base detect method (selecting only first 20 words)
 	async service_detect(text: string): Promise<DetectionResult> {
+		const params = new URLSearchParams({
+			text: text,
+			target_lang: "en",
+		});
+
 		const response = await requestUrl({
 			throw: false,
-			url: `${this.#host}/translate?` + new URLSearchParams({
-				text: text,
-				target_lang: "en",
-			}),
+			url: `${this.#host}/translate`,
 			method: "POST",
+			body: params.toString(),
 			headers: {
 				"Authorization": "DeepL-Auth-Key " + this.#api_key,
+				"Content-Type": "application/x-www-form-urlencoded",
 			},
 		});
 
@@ -118,34 +122,47 @@ export class Deepl extends DummyTranslate {
 		to: string,
 		options: ServiceOptions = {},
 	): Promise<TranslationResult> {
-		let split_sentences = "1";
-		if (options.split_sentences === "punctuation")
-			split_sentences = "nonewlines";
-		else if (options.split_sentences === "newline" || options.split_sentences === "both")
-			split_sentences = "0";
+		const split_sentences_map: Record<NonNullable<ServiceOptions["split_sentences"]>, string | undefined> = {
+			punctuation: "nonewlines",
+			newline: "0",
+			none: "0",
+			both: undefined,
+		};
+		const split_sentences = options.split_sentences ?
+			split_sentences_map[options.split_sentences] :
+			undefined;
 
 		const preserve_formatting = options.preserve_formatting ? "1" : "0";
 
-		let formality = "default";
+		let formality: string | undefined = undefined;
 		if (options.formality === "formal")
 			formality = "prefer_more";
 		else if (options.formality === "informal")
 			formality = "prefer_less";
+		else if (options.formality === "default")
+			formality = "default";
+
+		const params = new URLSearchParams();
+		params.append("text", text);
+		if (from !== "auto")
+			params.append("source_lang", from.toUpperCase());
+		params.append("target_lang", to.toUpperCase());
+		if (options.glossary)
+			params.append("glossary_id", options.glossary);
+		if (split_sentences)
+			params.append("split_sentences", split_sentences);
+		params.append("preserve_formatting", preserve_formatting);
+		if (formality)
+			params.append("formality", formality);
 
 		const response = await requestUrl({
 			throw: false,
-			url: `${this.#host}/translate?` + new URLSearchParams({
-				text: text,
-				source_lang: from === "auto" ? "" : from,
-				target_lang: to,
-				glossary_id: options.glossary || "",
-				split_sentences: split_sentences,
-				preserve_formatting: preserve_formatting,
-				formality: formality,
-			}),
+			url: `${this.#host}/translate`,
 			method: "POST",
+			body: params.toString(),
 			headers: {
 				"Authorization": "DeepL-Auth-Key " + this.#api_key,
+				"Content-Type": "application/x-www-form-urlencoded",
 			},
 		});
 
