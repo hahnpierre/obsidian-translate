@@ -42,7 +42,6 @@
     "dependencies": {
         "builtin-modules": "^3.3.0",
         "esbuild": "^0.19.5",
-        "esbuild-plugin-inline-worker": "github:mitschabaude/esbuild-plugin-inline-worker",
         "esbuild-sass-plugin": "^2.16.0",
         "esbuild-svelte": "^0.8.0",
         "install": "^0.13.0",

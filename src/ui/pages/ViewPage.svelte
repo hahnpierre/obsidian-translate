@@ -2,6 +2,7 @@
   import TranslatorPlugin from "../../main";
 
   import { onDestroy, onMount, SvelteComponent } from "svelte";
+  import { get } from "svelte/store";
   import type { Writable } from "svelte/store";
   import {
     settings,
@@ -49,6 +50,22 @@
   export let top_buttons: string[];
   export let left_buttons: string[];
   export let right_buttons: string[];
+
+  export function getState() {
+    return {
+      language_from,
+      language_to,
+      translation_service: get(translation_service),
+      auto_translate,
+      apply_glossary,
+      view_mode,
+      filter_mode,
+      show_attribution,
+      top_buttons,
+      left_buttons,
+      right_buttons,
+    };
+  }
 
   $: $translation_service, updateService();
 

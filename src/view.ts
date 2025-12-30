@@ -17,7 +17,7 @@ import type { TranslatorServiceType } from "./types";
 import { ViewAppearanceModal } from "./ui/modals";
 import ViewFunctionalityModal from "./ui/modals/view_functionality_modal";
 
-interface TranslatorViewState {
+export interface TranslatorViewState {
 	language_from: string;
 	language_to: string;
 	translation_service: TranslatorServiceType;
@@ -35,8 +35,10 @@ interface TranslatorViewEphemeralState {
 	receive_focus: boolean;
 }
 
+type ViewPageComponent = SvelteComponent & { getState: () => TranslatorViewState };
+
 export class TranslatorView extends ItemView {
-	view?: SvelteComponent;
+	view?: ViewPageComponent;
 
 	// Translation service store is shared with the View component
 	translation_service: Writable<TranslatorServiceType> = writable("dummy");
@@ -75,21 +77,21 @@ export class TranslatorView extends ItemView {
 		this.contentEl.style.flexDirection = "column";
 	}
 
-	getState() {
-		const state = super.getState();
+	getState(): Partial<TranslatorViewState> {
+		const state = super.getState() as Partial<TranslatorViewState>;
 		if (this.view) {
-			// Get data straight from Svelte component context
-			state.language_from = this.view.$$.ctx[<number> this.view.$$.props.language_from];
-			state.language_to = this.view.$$.ctx[<number> this.view.$$.props.language_to];
-			state.translation_service = get(this.translation_service);
-			state.auto_translate = this.view.$$.ctx[<number> this.view.$$.props.auto_translate];
-			state.apply_glossary = this.view.$$.ctx[<number> this.view.$$.props.apply_glossary];
-			state.view_mode = this.view.$$.ctx[<number> this.view.$$.props.view_mode];
-			state.filter_mode = this.view.$$.ctx[<number> this.view.$$.props.filter_mode];
-			state.show_attribution = this.view.$$.ctx[<number> this.view.$$.props.show_attribution];
-			state.top_buttons = this.view.$$.ctx[<number> this.view.$$.props.top_buttons];
-			state.left_buttons = this.view.$$.ctx[<number> this.view.$$.props.left_buttons];
-			state.right_buttons = this.view.$$.ctx[<number> this.view.$$.props.right_buttons];
+			const view_state = this.view.getState();
+			state.language_from = view_state.language_from;
+			state.language_to = view_state.language_to;
+			state.translation_service = view_state.translation_service;
+			state.auto_translate = view_state.auto_translate;
+			state.apply_glossary = view_state.apply_glossary;
+			state.view_mode = view_state.view_mode;
+			state.filter_mode = view_state.filter_mode;
+			state.show_attribution = view_state.show_attribution;
+			state.top_buttons = view_state.top_buttons;
+			state.left_buttons = view_state.left_buttons;
+			state.right_buttons = view_state.right_buttons;
 		}
 		return state;
 	}
@@ -132,7 +134,7 @@ export class TranslatorView extends ItemView {
 					left_buttons: state.left_buttons ?? [...current_settings.left_quickactions_default],
 					right_buttons: state.right_buttons ?? [...current_settings.right_quickactions_default],
 				},
-			});
+			}) as ViewPageComponent;
 		} else {
 			this.translation_service.set(state.translation_service || current_settings.translation_service);
 
